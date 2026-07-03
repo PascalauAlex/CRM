@@ -137,7 +137,7 @@
               <p class="mt-1.5 text-xs text-gray-500">Fiscal identification</p>
             </div>
           </div>
-           </div>
+        </div>
       </div>
 
       <div>
@@ -211,6 +211,7 @@
                     <label class="ml-3 mr-3">Discount</label>
                     <input
                       v-model="item.discount"
+                      @input="limiteazaDiscount(item)"
                       class="border-gray0399 rounded-lg w-1/2"
                       type="number"
                       placeholder="%"
@@ -716,6 +717,14 @@ function lineTotal(item) {
 }
 
 const cartTotal = computed(() => leadInterest.value.reduce((sum, item) => sum + lineTotal(item), 0))
+
+const limiteazaDiscount = (item) => {
+  if (item.discount > 100) {
+    item.discount = 100
+  } else if (item.discount < 0) {
+    item.discount = 0
+  }
+}
 </script>
 
 <style scoped></style>

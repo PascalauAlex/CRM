@@ -8,12 +8,10 @@
     leave-from-class="opacity-100 translate-y-0"
     leave-to-class="opacity-0 translate-y-4"
   >
-
     <div
       v-if="props.display"
       class="fixed bottom-12 right-12 w-96 h-[600px] max-h-[calc(100vh-6rem)] bg-white rounded-xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden z-50"
     >
-
       <div
         class="shrink-0 flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-blue-900 rounded-t-xl"
       >
@@ -57,6 +55,24 @@
             {{ message.content }}
           </div>
         </div>
+        <div v-if="assistantStore.loading" class="flex justify-start">
+          <div class="rounded-lg px-3 py-2 bg-white border border-gray-200 shadow-sm">
+            <div class="flex gap-1">
+              <span
+                class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                style="animation-delay: 0ms"
+              ></span>
+              <span
+                class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                style="animation-delay: 150ms"
+              ></span>
+              <span
+                class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                style="animation-delay: 300ms"
+              ></span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Input -->
@@ -66,12 +82,14 @@
             v-model="aiInput"
             @keyup.enter="sendAIMessage"
             type="text"
+            :disabled="assistantStore.loading"
             placeholder="Write a message..."
             class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
           <button
             @click="sendAIMessage"
             class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg transition"
+            :disabled="assistantStore.loading"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

@@ -24,6 +24,11 @@ class ProductsViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
 
+    def get_queryset(self):
+        team = Team.objects.filter(members__in=[self.request.user]).first()
+        return self.queryset.filter(team=team)
+
+
 
     def perform_create(self, serializer):
         team = Team.objects.filter(members__in= [self.request.user]).first()

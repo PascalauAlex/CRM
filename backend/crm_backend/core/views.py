@@ -60,7 +60,7 @@ class GoogleCalendarAPIView(APIView):
         expires_in = tokens.get('expires_in')
         scope = tokens.get('scope', '')
 
-        # 2. Identifică userul după email (callback-ul nu are JWT)
+        # 2. Identifica userul dupa email (callback-ul nu are JWT)
         userinfo = requests.get(
             'https://www.googleapis.com/oauth2/v3/userinfo',
             headers={'Authorization': f'Bearer {access_token}'},
@@ -78,13 +78,13 @@ class GoogleCalendarAPIView(APIView):
         except User.DoesNotExist:
             return redirect(f'{frontend_redirect_url}?error=user_not_found')
 
-        # 3. Salvează credențialul
+        # 3. Salveaza credențialul
         expiry = None
         if expires_in:
             expiry = timezone.now() + datetime.timedelta(seconds=int(expires_in))
 
         credential, _ = GoogleCalendarCredential.objects.get_or_create(user=user)
-        if refresh_token:  # Google îl trimite doar la consimțământ; nu-l suprascrie cu gol
+        if refresh_token:
             credential.refresh_token = refresh_token
         credential.scopes = scope.split() if scope else None
         credential.expiry = expiry

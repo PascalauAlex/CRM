@@ -18,3 +18,6 @@ class AdressSerializer(serializers.ModelSerializer):
 
         )
 
+
+
+
