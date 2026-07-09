@@ -74,8 +74,9 @@ async def get_lead_by_company(company:str):
 async def get_leads_by_priority(priority:str):
     async with httpx.AsyncClient(timeout=HTTP_TIMEOUT, follow_redirects=True) as client:
         resp = await client.get(f"{REST_BASE_URL}/api/v1/leads?priority={priority}",headers=_auth_header())
-    if resp.status_code > 400:
-        raise ToolError(f"{TOOL_ERROR_MESSAGE} {resp.status_code}: {resp.text[:200]}")
+    over_400_status(resp)
+    results, count = _unwrap_results(payload=resp.json())
+    return {"count":count, "leads":results}
     
 
 
@@ -103,6 +104,22 @@ async def get_stats():
     over_400_status(resp)
     results, count = _unwrap_results(payload=resp.json())
     return {"count":count,"tasks":results}
+
+@mcp.tool(description="Get task by status eg. open, closed, inprogress")
+async def get_task_by_status(status:str):
+    client = get_client()
+    resp = await client.get(f"{REST_BASE_URL}/api/v1/tasks?status={status}",headers=_auth_header())
+    over_400_status(resp)
+    results, count = _unwrap_results(payload=resp.json())
+    return {"count":count,"tasks":results}
+
+@mcp.tool(description="Get all products or services")
+async def get_all_products_or_services():
+    client = get_client()
+    resp = await client.get(f"{REST_BASE_URL}/api/v1/products",headers=_auth_header())
+    over_400_status(resp)
+    results, count = _unwrap_results(payload=resp.json())
+    return {"count":count, "products":results}
 
 
 
