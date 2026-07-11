@@ -21,14 +21,24 @@ class UserSerializer(serializers.ModelSerializer):
 
 
     def update(self, instance, validated_data):
-        instance.first_name = validated_data.get('first_name',instance.first_name)
-        instance.last_name = validated_data.get('last_name',instance.last_name)
+        full_name = None
+
+
+        if instance.first_name and instance.last_name:
+            instance.first_name = validated_data.get('first_name', instance.first_name)
+            instance.last_name = validated_data.get('last_name', instance.last_name)
+            full_name = instance.first_name + " " + instance.last_name
+
+        if instance.email:
+            instance.email = validated_data.get('email',instance.email)
+
         instance.save()
 
         request_data = self.context['request'].data
 
         phone = None
         profile_picture = None
+
 
 
         #Front-end send JSON
@@ -40,7 +50,7 @@ class UserSerializer(serializers.ModelSerializer):
             phone = request_data.get('userprofile.phone')
             profile_picture = request_data.get('userprofile.profile_picture')
 
-        if phone is not None or profile_picture is not None:
+        if phone is not None or profile_picture is not None or full_name is not None:
             profile = getattr(instance,'userprofile',None)
 
             if profile is not None:
@@ -50,6 +60,9 @@ class UserSerializer(serializers.ModelSerializer):
                 if profile_picture is not None:
                     if profile_picture not in ['', 'null', 'undefined'] and not isinstance(profile_picture, dict):
                         profile.profile_picture = profile_picture
+                if full_name is not None:
+                    profile.full_name = full_name
+
 
                 profile.save()
 

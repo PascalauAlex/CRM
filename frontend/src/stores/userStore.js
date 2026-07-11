@@ -25,6 +25,9 @@ export const useUserStore = defineStore('user',()=>{
       })
 
       user.value = response.data
+      
+
+
     }catch (err){
       console.error('Error while getting the user',err)
     }
@@ -54,7 +57,6 @@ export const useUserStore = defineStore('user',()=>{
       const response = await api.patch(`/api/v1/users/me/`,userData,{
         headers: {
           Authorization : `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data'
         }
       })
       user.value = response.data
@@ -83,6 +85,19 @@ export const useUserStore = defineStore('user',()=>{
     }
   }
 
+  async function profile_completed(){
+    loading.value = true
+    error.value = null
+
+    try{
+      const response = await api.get('/api/v1/profile-completed')
+    }catch(err){
+      console.error(err)
+    }finally{
+      loading.value = false
+    }
+  }
+
 
 
   return {
@@ -93,6 +108,7 @@ export const useUserStore = defineStore('user',()=>{
     editUser,
     getUserProfile,
     userProfile,
+    profile_completed
   }
 
 })

@@ -1,9 +1,13 @@
+from sys import path
+
 from django.contrib.auth import get_user_model
 from django.shortcuts import redirect
 from urllib.parse import urlencode
 
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.decorators import api_view
+from key_value.aio.wrappers import retry
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from crm_backend import settings
 from rest_framework import viewsets
@@ -105,13 +109,19 @@ class GoogleAuthAPIView(APIView):
 
         print("=== AFTER GET OR CREATE ===")
 
+        set_profile = False
+
+        if not user.teams.exists():
+            set_profile = True
+
+
         refresh = RefreshToken.for_user(user)
         params= urlencode({
             'access': str(refresh.access_token),
-            'refresh':str(refresh)
+            'refresh':str(refresh),
+            'set_profile':str(set_profile)
         })
-
-
+        print(params)
         return redirect(f'{settings.FRONTEND_URL}/auth/success?{params}')
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -123,6 +133,24 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         User.objects.filter()
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def profile_completed(request):
+    updated = UserProfile.objects.filter(user=request.user).update(profile_completed=True)
+
+
+    return Response({"profile_completed":bool(updated)})
+
+
+
+
+
+
+
+
+
 
 
 

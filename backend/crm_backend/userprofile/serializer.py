@@ -16,7 +16,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'full_name',
             'profile_picture',
             'user_address',
-            'picture_url'
+            'picture_url',
+            'profile_completed',
         )
 
 class GoogleAuthSerializer(serializers.Serializer):

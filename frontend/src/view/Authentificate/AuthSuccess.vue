@@ -19,10 +19,17 @@ const authStore = useAuthStore()
 onMounted(() => {
   const access = route.query.access
   const refresh = route.query.refresh
+  const set_profile = route.query.set_profile
+  console.log(`Access ${access}, Refresh: ${refresh}, set_profile:${set_profile}`)
+  authStore.setToken(access,refresh)
+  
 
-  authStore.setToken(access, refresh)
-
-  router.replace('/dashboard')
+  if(set_profile === 'True'){
+    router.replace('/set-user-profile')
+  }else{
+    router.replace('/')
+  }
+  
 })
 </script>
 

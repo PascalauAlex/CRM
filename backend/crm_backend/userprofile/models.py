@@ -20,6 +20,7 @@ class UserProfile(models.Model):
     google_refresh_token = models.CharField(max_length=255, blank=True, null=True)
     user_address = models.ForeignKey(Address, on_delete=models.SET_NULL, related_name='userprofile_address', null=True, blank=True)
     picture_url = models.URLField(blank=True,null=True)
+    profile_completed = models.BooleanField(default=False)
     
 
     def __str__(self):

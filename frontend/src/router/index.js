@@ -42,7 +42,8 @@ const router = createRouter({
       component: () => import('@/view/Authentificate/AuthSuccess.vue'),
     },
     {
-      path: '/set-user-profile',
+      path: '/set-user-profile/:username',
+      name:"SetUserProfile",
       component: () => import('@/view/Authentificate/UserProfile.vue'),
       meta: { title: 'Configure your profile', hideNavbar: true },
     },

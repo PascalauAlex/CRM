@@ -51,9 +51,32 @@
         <div class="pt-2">
           <button
             type="submit"
+            :disabled="loading"
             class="flex w-full justify-center rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-bold leading-6 text-white shadow-md hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-colors active:scale-95"
           >
-            Submit
+        
+            {{ loading ? 'Loading...' : 'Submit' }}
+            <svg
+            v-if="loading"
+            class="animate-spin h-5 w-5 text-white ml-2"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              class="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="4"
+            ></circle>
+            <path
+              class="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
+          </svg>
           </button>
         </div>
       </form>
@@ -158,19 +181,32 @@ const handleLogin = async () => {
     authStore.setToken(access, refresh)
 
     const userResponse = await api.get('/api/v1/users/me/')
-    console.log('USER DATA : ', userResponse.data)
+    
 
     authStore.setUser(userResponse.data)
 
     //Initializam si facem cerere pentru user pentru a avea datele incarcate
-    await userStore.getUser()
+    const check_user = await userStore.getUser()
+    const user = userStore.user
+    if(user.userprofile.profile_completed == false){
+      router.push({name:'SetUserProfile',params:{username:user?.username}})
+    }else{
+      router.push('/')
+    }
 
-    //redirect the user to dashboard
-    router.push('/')
+    
+    
+    
+
+    
+    
   } catch (err) {
     if (err.response && err.response.status == 400) {
       error.value = 'Email or password are incorect'
-    } else {
+    } else if(err.response && err.response.status == 401){
+      console.log(err.response)
+      error.value = `Error: ${err.response.data.detail}`
+    }else{
       error.value = 'An error acoured trying to connect to the server'
     }
     console.error(err)

@@ -1,9 +1,11 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useUserStore } from '@/stores/userStore.js'
 import { useTeamStore } from '@/stores/teamStore.js'
 import { useToast } from 'vue-toast-notification'
-import { useRouter } from 'vue-router'
+import { useRouter,useRoute } from 'vue-router'
+
+
 
 const userStore = useUserStore()
 
@@ -16,8 +18,22 @@ const createOwnTeam = ref(false)
 const teamStore = useTeamStore()
 const joinedTeam = ref('')
 const router = useRouter()
-
+const route = useRoute()
 const teamName = ref('')
+
+const first_name = ref('')
+const last_name = ref('')
+const email = ref('')
+const teamAsigned = ref(false)
+
+
+const displayName = computed(()=>{
+  return `${first_name.value} ${last_name.value}`
+})
+
+const displayEmail = computed(()=>{
+  return `${email.value}`
+})
 
 //The user will be redirected to a separate page for creating his own team
 function toggleBelongToTeam() {
@@ -44,6 +60,7 @@ async function createTeam() {
     teamCreated.value = !teamCreated.value
 
     toast.success(`Team ${teamName.value} created successfully!`)
+    teamAsigned.value = true
   } catch (err) {
     console.error(err)
     toast.error('Error while creating the team!')
@@ -64,6 +81,7 @@ async function activateTeamCode() {
     teamValidated.value = !teamValidated.value
     joinedTeam.value = response.data['team']
     toast.success(`Joined team : ${joinedTeam.value} successfully!`)
+    teamAsigned.value = true
   } catch (err) {
     console.error(err)
     toast.error('Error while joining the team!')
@@ -76,9 +94,13 @@ async function saveProfile() {
   isSubmitting.value = true
   const profileData = {
     phone: phoneNumber.value,
+    first_name:first_name.value,
+    last_name:last_name.value,
+    email:email.value
   }
   try {
     await userStore.editUser(profileData)
+    await userStore.profile_completed()
     router.push('/dashboard')
   } catch (err) {
     toast.error('Error while saving the profile')
@@ -106,6 +128,10 @@ const initials = computed(() => {
     .toUpperCase()
 })
 
+onMounted(()=>{
+  email.value = route.params.username
+  console.log(email.value)
+})
 
 
 </script>
@@ -175,7 +201,7 @@ const initials = computed(() => {
           <!-- Info -->
           <div class="flex-1 min-w-0">
             <p class="text-base font-semibold text-gray-900 truncate">
-              {{ userStore.userProfile?.full_name || 'No name set' }}
+              {{ userStore.userProfile?.full_name || displayName ||'No name set'  }}
             </p>
             <p class="text-sm text-gray-500 truncate flex items-center gap-1.5 mt-0.5">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -186,9 +212,21 @@ const initials = computed(() => {
                   d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                 />
               </svg>
-              {{ userStore.user?.email }}
+              {{ userStore.user?.email || displayEmail}}
             </p>
           </div>
+        </div>
+      </div>
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 mb-4 p-2 flex-wrap"
+      v-if="!userStore.user.first_name || !userStore.user.last_name">
+        <h3 class="font-bold">Complete profile</h3>
+        <div class="block">
+            <label class="font-semibold">Last name</label>
+            <input type="text" name="last_name" class="block rounded-lg" v-model="last_name">
+        </div>
+        <div>
+          <label class="font-semibold">First name</label>
+            <input type="text" name="first_name" class="block rounded-lg" v-model="first_name">
         </div>
       </div>
 
@@ -402,10 +440,31 @@ const initials = computed(() => {
       <div class="flex justify-end gap-3">
         <button
           @click="saveProfile"
-          :disabled="isSubmitting"
+          :disabled="isSubmitting && !teamAsigned"
           class="px-5 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 disabled:bg-gray-300 transition shadow-sm"
         >
           {{ isSubmitting ? 'Saving...' : 'Complete profile' }}
+          <svg
+            v-if="isSubmitting"
+            class="animate-spin h-5 w-5 text-white ml-2"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              class="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="4"
+            ></circle>
+            <path
+              class="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
+          </svg>
         </button>
       </div>
     </div>

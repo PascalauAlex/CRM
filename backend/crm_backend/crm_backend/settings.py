@@ -107,8 +107,12 @@ WSGI_APPLICATION = 'crm_backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'railway',
+        'USER': 'postgres',
+        'PASSWORD':'snAODctmZYWUxAUXcdKUcaJROvzwGjDr',
+        'HOST': 'tokaido.proxy.rlwy.net',
+        'PORT': '40904'
     }
 }
 
@@ -175,7 +179,7 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': True,
 
-    'AUTH_HEADER_TYPES': ('Bearer',),  # OBLIGATORIU:  'Bearer' pentru Vue
+    'AUTH_HEADER_TYPES': ('Bearer',),
     'USER_ID_FIELD': 'id',
     'USER_ID_CLAIM': 'user_id',
 }
