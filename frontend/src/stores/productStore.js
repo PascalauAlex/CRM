@@ -19,7 +19,7 @@ export const useProductStore = defineStore('products',()=>{
     error.value = null
 
     try{
-      const response = await api.get('/api/v1/products')
+      const response = await api.get('/api/v1/products/')
       products.value = response.data
     }catch (err){
       console.error(err)
@@ -62,7 +62,7 @@ export const useProductStore = defineStore('products',()=>{
     error.value = null
 
     try{
-      const response = await api.get('/api/v1/product-category')
+      const response = await api.get('/api/v1/product-category/')
       categories.value = response.data
     }catch (err){
       console.error(err)
@@ -88,7 +88,7 @@ export const useProductStore = defineStore('products',()=>{
       loading.value = true
       error.value = null
       try {
-        const response = await api.get(`/api/v1/products/${productID}`)
+        const response = await api.get(`/api/v1/products/${productID}/`)
         product.value = response.data
       } catch (err) {
         console.error(err)

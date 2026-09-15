@@ -17,7 +17,6 @@ urlpatterns = [
     path('api/v1/',include('core.urls')),
     path('api/v1/',include('ai_assistant.urls')),
     path('silk/',include('silk.urls',namespace='silk')),
-
 ]
 
 if settings.DEBUG:

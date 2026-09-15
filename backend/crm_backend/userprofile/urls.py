@@ -11,7 +11,7 @@ router.register('user-details',UserViewSet,basename='user-details')
 urlpatterns = [
     path('',include(router.urls)),
     path('auth/login/google/',GoogleAuthAPIView.as_view(),name='google-auth-connect'),
-    path('/profile-completed',profile_completed,name="profile-completed")
+    path('profile-completed',profile_completed,name="profile-completed")
 
 ]
 

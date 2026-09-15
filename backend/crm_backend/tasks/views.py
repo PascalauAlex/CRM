@@ -63,7 +63,7 @@ class TaskViewSet(viewsets.ModelViewSet):
             team=team,
             assigned_to=assigned_user,
             lead=lead
-            ,
+
         )
         return Response({'Success':'Task created succesfully'},status=200)
 

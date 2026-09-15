@@ -102,7 +102,7 @@
       </transition>
     </div>
 
-    <!-- Container flex pentru cele două panouri -->
+
     <div class="flex gap-4">
       <!-- Panoul stâng - Task-uri -->
       <div class="bg-white shadow-sm w-1/2 p-4 rounded-lg">

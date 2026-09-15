@@ -38,7 +38,6 @@ class Product(models.Model):
     team = models.ForeignKey(Team,on_delete=models.CASCADE,blank=True,null=True)
 
 
-
 class LeadProductInterest(models.Model):
     lead = models.ForeignKey(Lead, related_name='product_interests',on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.PROTECT)

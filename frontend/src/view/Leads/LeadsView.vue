@@ -257,25 +257,12 @@ const toggleAddLeadModal = () => {
   addLeadModal.value = !addLeadModal.value
 }
 
-const threeDaysNoInteractionAlert = (leads) => {
-  let threeeDaysNoInteraction = []
-  for (let lead of leads) {
-    if (lead.last_contacted_date < Date.now() + 24 * 3600) {
-      threeeDaysNoInteraction.push(lead.company + '     ')
-    }
-  }
-  console.log(threeeDaysNoInteraction)
-  toast.warning(
-    `For the leads: ${threeeDaysNoInteraction} there's no interaction for more than 3 days! `,
-  )
-}
+
 
 onMounted(async () => {
   try {
-    const ok = await leadStore.fetchLeads(currentPage.value)
-    console.log('Ceva')
-    threeDaysNoInteractionAlert(leadStore.leads)
-    toast.warning(`Attention ${inactiveStatusCount(leadStore.leads)} leads inactive!`)
+    await leadStore.fetchLeads(currentPage.value)
+
   } catch (err) {
     console.log(`Error while loading the leads! ERROR: ${err}`)
     toast.error('Error while loading the leads!')

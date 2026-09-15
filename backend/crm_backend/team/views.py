@@ -3,6 +3,8 @@ from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND
 from rest_framework.views import APIView
+
+
 from .serializers import TeamSerializer, UserSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
@@ -22,8 +24,12 @@ class TeamViewSet(viewsets.ModelViewSet):
     #The user will be a member of the team
     def perform_create(self, serializer):
         obj = serializer.save(created_by = self.request.user)
+        user = self.request.user
+        user.is_staff = True
+        user.save()
         obj.members.add(self.request.user)
         obj.save()
+
 
 
 #Cautam echipele unde userul curent este membru
@@ -70,7 +76,6 @@ def join_team_by_code(request):
         )
 
     team.members.add(user)
-
 
     return Response({"team":team.name,"message":f"User joined team : {team.name}"})
 

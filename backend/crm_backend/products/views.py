@@ -1,18 +1,10 @@
-import select
-from django.db.models import Model
 from mailjet_rest.client import ValidationError
 from rest_framework import viewsets
-from rest_framework.decorators import permission_classes
-from urllib3 import Retry
-
-from products import serializer
 from products.models import Product, ProductCategory, LeadProductInterest
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from rest_framework.views import APIView
-
 from products.serializer import ProductSerializer, ProductCategorySerializer, LeadProductSerializer
 from team.models import Team
-from lead.models import Lead
+
 
 
 # Create your views here.
@@ -47,10 +39,19 @@ class ProductCategoryViewSet(viewsets.ModelViewSet):
     serializer_class = ProductCategorySerializer
     queryset = ProductCategory.objects.all()
 
-
     def get_queryset(self):
         team = Team.objects.filter(members__in= [self.request.user]).first()
         return self.queryset.filter(team=team)
+
+    def perform_create(self, serializer):
+        team = Team.objects.filter(members__in=[self.request.user]).first()
+        if not team:
+            raise ValidationError({
+                'team':'You must be assigned to a team to create products.'
+            })
+        serializer.save(
+            team=team
+        )
 
 class ProductLeadViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]

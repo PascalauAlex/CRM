@@ -105,14 +105,20 @@ WSGI_APPLICATION = 'crm_backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+DATABASE_NAME = os.getenv("DATABASE_NAME")
+DATABASE_USER = os.getenv("DATABASE_USER")
+DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
+DATABASE_HOST = os.getenv("DATABASE_HOST")
+DATABASE_PORT = os.getenv("DATABASE_PORT")
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'railway',
-        'USER': 'postgres',
-        'PASSWORD':'snAODctmZYWUxAUXcdKUcaJROvzwGjDr',
-        'HOST': 'tokaido.proxy.rlwy.net',
-        'PORT': '40904'
+        'NAME': 'crm',
+        'USER': 'crm',
+        'PASSWORD':'crm_dev',
+        'HOST': 'localhost',
+        'PORT': '5432'
     }
 }
 

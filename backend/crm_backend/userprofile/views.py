@@ -140,7 +140,6 @@ class UserViewSet(viewsets.ModelViewSet):
 def profile_completed(request):
     updated = UserProfile.objects.filter(user=request.user).update(profile_completed=True)
 
-
     return Response({"profile_completed":bool(updated)})
 
 
