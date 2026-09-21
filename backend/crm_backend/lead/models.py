@@ -154,6 +154,8 @@ class Lead(models.Model):
 
 
 
+
+
 class LeadNote(models.Model):
     team = models.ForeignKey(Team,related_name='leadNotes',on_delete=models.CASCADE)
     lead = models.ForeignKey(Lead,related_name='leadNotes',on_delete=models.CASCADE)

@@ -135,7 +135,6 @@ class LeadViewSet(viewsets.ModelViewSet):
                 case _:
                     new_priority = 'high'
 
-
             if lost:
                 new_status = 'lost'
                 new_priority = 'low'
@@ -164,13 +163,10 @@ class LeadViewSet(viewsets.ModelViewSet):
 
 
 
-
     def perform_create(self, serializer):
         team = Team.objects.filter(members__in=[self.request.user]).first()
         initial_confidence = 5
         priority = 'low'
-
-
         serializer.save(team = team,created_by=self.request.user,confidence = initial_confidence , priority=priority)
 
 

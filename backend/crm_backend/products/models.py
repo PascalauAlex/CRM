@@ -28,11 +28,9 @@ class Product(models.Model):
     category = models.ForeignKey(ProductCategory,on_delete=models.PROTECT)
     type = models.CharField(max_length=20,choices=PRODUCT_TYPE)
     unit_of_measure = models.CharField(max_length=20,choices=UNIT_CHOICES)
-
     base_price = models.DecimalField(max_digits=12,decimal_places=2)
     currency = models.CharField(max_length=3, default='RON')
     vat_rate = models.DecimalField(max_digits=4, decimal_places=2, default=19)
-
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     team = models.ForeignKey(Team,on_delete=models.CASCADE,blank=True,null=True)

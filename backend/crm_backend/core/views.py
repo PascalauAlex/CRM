@@ -1,15 +1,15 @@
 from collections import Counter
 
+from django.db import connection
 from django.db.models import Count, Sum, Value, Q
 from django.db.models.functions import Concat
 from django.shortcuts import  redirect
 from django.utils.http import urlencode
-from rest_framework.decorators import api_view
 from rest_framework.permissions import  AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 import requests
-
+from rest_framework.decorators import api_view
 from client.models import Client
 from crm_backend import settings
 from tasks.models import Tasks
@@ -21,6 +21,22 @@ from django.contrib.auth.models import User
 from core.models import GoogleCalendarCredential
 from lead.models import Lead
 
+class HealthAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "SELECT 1"
+            )
+            result = [row[0] for row in cursor.fetchall()]
+            print(result)
+        if result:
+            status = "healthy"
+        else:
+            status = "down"
+
+        return Response({"health":status})
 
 
 
